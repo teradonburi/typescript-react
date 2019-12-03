@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { load } from './reducer/user'
-
+import { Link } from "react-router-dom"
 
 interface RootState {
   user: { users: [any] }
@@ -20,7 +20,7 @@ const connector = connect(
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux
 
-class App extends React.Component<Props, {}> {
+class UserPage extends React.Component<Props, {}> {
 
   componentDidMount() {
     // user取得APIコールのactionをキックする
@@ -42,6 +42,7 @@ class App extends React.Component<Props, {}> {
                 <p>名前:{user.name.first + ' ' + user.name.last}</p>
                 <p>性別:{user.gender}</p>
                 <p>email:{user.email}</p>
+                <Link to='/hoge'>あぼーん</Link>
               </div>
             )
           })}
@@ -50,4 +51,4 @@ class App extends React.Component<Props, {}> {
   }
 }
 
-export default connector(App)
+export default connector(UserPage)

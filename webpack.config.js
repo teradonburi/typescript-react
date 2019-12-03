@@ -1,16 +1,24 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
+const webpack = require('webpack')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 module.exports = {
   mode: 'development', // 開発モードビルド
-  entry: './src/index.tsx', // ビルド対象のアプリケーションのエントリーファイル
-  devtool: "source-map", // ソースマップを出力するための設定、ソースマップファイル（.map）が存在する場合、ビルド前のソースファイルでデバッグができる
+  // ビルド対象のアプリケーションのエントリーファイル
+  entry: [
+    'webpack-hot-middleware/client', // HMR debug用
+    'core-js/modules/es.promise', // IEでPromiseを使えるようにする
+    'core-js/modules/es.array.iterator', // IEでArrayのiteratorを使えるようにする
+    './client/index.tsx'
+  ], 
+  devtool: 'inline-cheap-module-source-map', // ソースマップを出力するための設定、ソースマップファイル（.map）が存在する場合、ビルド前のソースファイルでデバッグができる
   output: {
-    path: path.resolve(__dirname, 'dist'),  // 出力するフォルダ名(dist)
-    filename: 'bundle.js' // 出力するメインファイル名
+    path: path.resolve(__dirname, 'dist'), // 出力するフォルダ名(dist)
+    filename: 'bundle.js', // 出力するメインファイル名
+    publicPath: '/public/' // ホスティングするフォルダ
   },
   resolve: {
-    modules: [path.resolve(__dirname, "src"), "node_modules"],
+    modules: ['node_modules'],
     extensions: ['.js', '.ts', '.tsx']
   },
   module: {
@@ -20,30 +28,15 @@ module.exports = {
         exclude: /node_modules/, // 関係のないnode_modulesはビルドに含めない
         use: {
           loader: 'babel-loader', // babel
-          options: {
-            presets: [
-              // polyfillのpreset
-              ['@babel/preset-env', {
-                useBuiltIns: 'usage',
-                corejs: 3,
-                modules: false // ECMAScript向けビルド
-              }],
-              // reactのpreset
-              '@babel/preset-react',
-              // typescript→javascript変換のpreset
-              '@babel/preset-typescript'
-            ],
-            // プラグイン
-            plugins: [
-              '@babel/plugin-proposal-optional-chaining',
-              '@babel/plugin-syntax-nullish-coalescing-operator'
-            ]
-          },
         }
       }
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({template: './index.html'}) // ビルドしたbundle.jsをindex.htmlに埋め込む
+    new webpack.HotModuleReplacementPlugin(), // HMR debug用
+    new webpack.DefinePlugin({
+      'process.env.IS_BROWSER': JSON.stringify(true)
+    }),
+    new LoadablePlugin()
   ]
 }
