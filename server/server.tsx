@@ -48,7 +48,8 @@ import { Router } from "../client/Router"
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
 import theme from '../client/theme'
 // Helmet
-import { Helmet } from 'react-helmet'
+import { HelmetProvider } from 'react-helmet-async'
+import { HelmetData } from 'react-helmet'
 
 app.get(
   '*',
@@ -69,15 +70,19 @@ app.get(
     // CSS(MUI)
     const sheets = new ServerStyleSheets()
 
+    const helmetContext: {helmet?: HelmetData} = {}
+
     const App: React.SFC = () => (
       sheets.collect(
-        <ThemeProvider theme={theme}>
-          <Provider store={store}>
-            <StaticRouter location={req.url} context={context}>
-              <Router />
-            </StaticRouter>
-          </Provider>
-        </ThemeProvider>
+        <HelmetProvider context={helmetContext}>
+          <ThemeProvider theme={theme}>
+            <Provider store={store}>
+              <StaticRouter location={req.url} context={context}>
+                <Router />
+              </StaticRouter>
+            </Provider>
+          </ThemeProvider>
+        </HelmetProvider>
       )
     )
 
@@ -90,7 +95,7 @@ app.get(
     const MUIStyles = sheets.toString()
 
     // Helmetで埋め込んだ情報を取得し、そのページのheaderに追加する
-    const helmet =  Helmet.renderStatic()
+    const { helmet } = helmetContext
 
     res.set('content-type', 'text/html')
     res.send(`<!DOCTYPE html>
@@ -100,10 +105,7 @@ app.get(
 <meta name='viewport' content='width=device-width, initial-scale=1' />
 ${extractor.getLinkTags()}
 ${extractor.getStyleTags()}
-${helmet.title.toString()}
-${helmet.meta.toString()}
-${helmet.link.toString()}
-${helmet.script.toString()}
+${helmet ? helmet.title.toString() + helmet.meta.toString() + helmet.link.toString() + helmet.script.toString() : ''}
 <style id='jss-server-side'>${MUIStyles}</style>
 </head>
 <body>

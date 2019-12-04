@@ -7,6 +7,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import { loadableReady } from '@loadable/component'
 import client from 'axios'
 import thunk from 'redux-thunk'
+import { HelmetProvider } from 'react-helmet-async'
 
 import reducer from './reducer/reducer'
 import theme from './theme'
@@ -50,13 +51,15 @@ const App: React.FC = ({children}) => {
 
 
   return (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <BrowserRouter>
-          {children}
-        </BrowserRouter>
-      </Provider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <BrowserRouter>
+            {children}
+          </BrowserRouter>
+        </Provider>
+      </ThemeProvider>
+    </HelmetProvider>
   )
 }
 

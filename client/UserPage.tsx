@@ -2,9 +2,9 @@ import React from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { load } from './reducer/user'
 import { Link } from "react-router-dom"
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 
-import { withTheme, withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { AppBar,Toolbar, Avatar, Card, CardContent, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import { Email } from '@material-ui/icons'
 import { orange } from '@material-ui/core/colors'
