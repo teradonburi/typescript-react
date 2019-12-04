@@ -4,35 +4,73 @@ import { load } from './reducer/user'
 import { Link } from "react-router-dom"
 import { Helmet } from 'react-helmet'
 
-interface RootState {
+import { withTheme, withStyles } from '@material-ui/core/styles'
+import { AppBar,Toolbar, Avatar, Card, CardContent, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
+import { Email } from '@material-ui/icons'
+import { orange } from '@material-ui/core/colors'
+interface ReduxState {
   user: { users: [any] }
 }
 
 // connectでwrap
 const connector = connect(
   // propsに受け取るreducerのstate
-  (state: RootState) => ({
+  (state: ReduxState) => ({
     users: state.user.users
   }),
   // propsに付与するactions
   { load }
 )
 
+interface UserPageProps {
+  bgcolor: string;
+}
+interface UserPageState {
+  user: any;
+}
+
+interface Classes {
+  classes: {
+    root: string;
+    card: string;
+    name: string;
+    gender: string;
+  }
+}
+
 type PropsFromRedux = ConnectedProps<typeof connector>
 // propsの型
-type Props = PropsFromRedux & {}
+type Props = PropsFromRedux & Classes & UserPageProps
 // stateの型
-type State = {}
+type State = UserPageState
 
 class UserPage extends React.Component<Props, State> {
+
+  constructor (props: Props) {
+    super(props)
+    this.state = {
+      user: null,
+    }
+    this.handleClickOpen = this.handleClickOpen.bind(this)
+    this.handleRequestClose = this.handleRequestClose.bind(this)
+  }
 
   componentDidMount() {
     // user取得APIコールのactionをキックする
     this.props.load()
   }
 
+  handleClickOpen(user: any) {
+    this.setState({ user })
+  }
+
+  handleRequestClose() {
+    this.setState({ user: null })
+  }
+
   render () {
-    const { users } = this.props
+    const { users, classes } = this.props
+
     // 初回はnullが返ってくる（initialState）、処理完了後に再度結果が返ってくる
     console.log(users)
     return (
@@ -41,22 +79,60 @@ class UserPage extends React.Component<Props, State> {
           <title>ユーザページ</title>
           <meta name='description' content='ユーザページのdescriptionです' />
         </Helmet>
+        <AppBar position="static" color="primary">
+          <Toolbar classes={{root: classes.root}} >
+            タイトル
+          </Toolbar>
+        </AppBar>
         {/* 配列形式で返却されるためmapで展開する */}
         {users && users.map((user) => {
           return (
             // ループで展開する要素には一意なkeyをつける（ReactJSの決まり事）
-            <div key={user.email}>
-              <img src={user.picture.thumbnail} />
-              <p>名前:{user.name.first + ' ' + user.name.last}</p>
-              <p>性別:{user.gender}</p>
-              <p>email:{user.email}</p>
-              <Link to='/hoge'>あぼーん</Link>
-            </div>
+            <Card key={user.email} style={{marginTop:'10px'}}>
+              <CardContent className={classes.card} >
+                <Avatar src={user.picture.thumbnail} />
+                <p className={classes.name}>{'名前:' + user.name.first + ' ' + user.name.last} </p>
+                <p className={classes.gender}>{'性別:' + (user.gender == 'male' ? '男性' : '女性')}</p>
+                <div style={{textAlign: 'right'}} >
+                  <Button variant="contained" color='secondary' onClick={() => this.handleClickOpen(user)}><Email style={{marginRight: 5, color: orange[200]}}/>Email</Button>
+                </div>
+                <Link to='/hoge'>あぼーん</Link>
+              </CardContent>
+            </Card>
           )
         })}
+        {
+          this.state.user &&
+          <Dialog open={!!this.state.user} onClose={() => this.handleRequestClose()}>
+            <DialogTitle>メールアドレス</DialogTitle>
+            <DialogContent>{this.state.user.email}</DialogContent>
+          </Dialog>
+        }
       </div>
     )
   }
 }
 
-export default connector(UserPage)
+
+export default withStyles((theme) => ({
+  root: {
+    fontStyle: 'italic',
+    fontSize: 21,
+    minHeight: 64,
+    // 画面サイズがモバイルサイズのときのスタイル
+    [theme.breakpoints.down('xs')]: {
+      fontStyle: 'normal',
+    },
+  },
+  card: {
+    background: (props: UserPageProps) => `${props.bgcolor}`, // props経由でstyleを渡す
+  },
+  name: {
+    margin:10, 
+    color: theme.palette.primary.main,
+  },
+  gender: {
+    margin: 10,
+    color: theme.palette.secondary.main, // themeカラーを参照
+  },
+}))(connector(UserPage))

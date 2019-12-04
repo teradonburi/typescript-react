@@ -38,7 +38,7 @@ const store = createStore(reducer, initialData, composeEnhancers(applyMiddleware
 
 const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate
 
-const render = async () => {
+const App: React.FC = ({children}) => {
 
   React.useEffect(() => {
     const jssStyles = document.getElementById('jss-server-side')
@@ -48,20 +48,28 @@ const render = async () => {
     }
   }, [])
 
-  const { Router } = await import(/* webpackMode: "eager" */ './Router')
 
-  renderMethod(
+  return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <BrowserRouter>
-          <Router />
+          {children}
         </BrowserRouter>
       </Provider>
-    </ThemeProvider>,
-    document.getElementById('root')
+    </ThemeProvider>
   )
 }
 
+const render = async () => {
+  const {Router} = await import(/* webpackMode: "eager" */ './Router')
+
+  renderMethod(
+    <App>
+      <Router />
+    </App>,
+    document.getElementById('root')
+  )
+}
 
 loadableReady(() => {
   render()

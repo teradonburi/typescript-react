@@ -5,9 +5,9 @@ import loadable from '@loadable/component'
 const UserPage = loadable(() => import(/* webpackPrefetch: true, webpackChunkName: 'userpage' */ './UserPage'))
 const NotFound = loadable(() => import(/* webpackPrefetch: true, webpackChunkName: 'notfound' */ './NotFound'))
 
-export const Router = () => (
+export const Router: React.SFC = () => (
   <Switch>
-    <Route exact path='/' render={(props) => <UserPage {...props} />} />
+    <Route exact path='/' render={(props) => <UserPage bgcolor='#eeeeee' {...props} />} />
     {/* それ以外のパス */}
     <Route component={NotFound} />　
   </Switch>
