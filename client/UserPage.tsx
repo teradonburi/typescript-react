@@ -2,6 +2,7 @@ import React from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { load } from './reducer/user'
 import { Link } from "react-router-dom"
+import { Helmet } from 'react-helmet'
 
 interface RootState {
   user: { users: [any] }
@@ -18,9 +19,12 @@ const connector = connect(
 )
 
 type PropsFromRedux = ConnectedProps<typeof connector>
-type Props = PropsFromRedux
+// propsの型
+type Props = PropsFromRedux & {}
+// stateの型
+type State = {}
 
-class UserPage extends React.Component<Props, {}> {
+class UserPage extends React.Component<Props, State> {
 
   componentDidMount() {
     // user取得APIコールのactionをキックする
@@ -33,19 +37,23 @@ class UserPage extends React.Component<Props, {}> {
     console.log(users)
     return (
       <div>
-          {/* 配列形式で返却されるためmapで展開する */}
-          {users && users.map((user) => {
-            return (
-              // ループで展開する要素には一意なkeyをつける（ReactJSの決まり事）
-              <div key={user.email}>
-                <img src={user.picture.thumbnail} />
-                <p>名前:{user.name.first + ' ' + user.name.last}</p>
-                <p>性別:{user.gender}</p>
-                <p>email:{user.email}</p>
-                <Link to='/hoge'>あぼーん</Link>
-              </div>
-            )
-          })}
+        <Helmet>
+          <title>ユーザページ</title>
+          <meta name='description' content='ユーザページのdescriptionです' />
+        </Helmet>
+        {/* 配列形式で返却されるためmapで展開する */}
+        {users && users.map((user) => {
+          return (
+            // ループで展開する要素には一意なkeyをつける（ReactJSの決まり事）
+            <div key={user.email}>
+              <img src={user.picture.thumbnail} />
+              <p>名前:{user.name.first + ' ' + user.name.last}</p>
+              <p>性別:{user.gender}</p>
+              <p>email:{user.email}</p>
+              <Link to='/hoge'>あぼーん</Link>
+            </div>
+          )
+        })}
       </div>
     )
   }

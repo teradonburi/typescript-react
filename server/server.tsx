@@ -39,11 +39,16 @@ const nodeStats = path.resolve(
 )
 
 // Redux
-import { Provider } from 'react-redux'
 import { createStore } from 'redux'
+import { Provider } from 'react-redux'
 // StaticRouter
 import { StaticRouter } from 'react-router-dom'
 import { Router } from "../client/Router"
+// Material-UI SSR
+import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
+import theme from '../client/theme'
+// Helmet
+import { Helmet } from 'react-helmet'
 
 app.get(
   '*',
@@ -61,12 +66,19 @@ app.get(
     // loadable-stats.jsonからフロントエンドモジュールを取得する
     const extractor = new ChunkExtractor({ statsFile: nodeStats })
 
+    // CSS(MUI)
+    const sheets = new ServerStyleSheets()
+
     const App: React.SFC = () => (
-      <Provider store={store}>
-        <StaticRouter location={req.url} context={context}>
-          <Router />
-        </StaticRouter>
-      </Provider>
+      sheets.collect(
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <StaticRouter location={req.url} context={context}>
+              <Router />
+            </StaticRouter>
+          </Provider>
+        </ThemeProvider>
+      )
     )
 
     const jsx = extractor.collectChunks(<App />)
@@ -74,16 +86,31 @@ app.get(
     // SSR
     const html = renderToString(jsx)
 
+    // Material-UIのCSSを作成
+    const MUIStyles = sheets.toString()
+
+    // Helmetで埋め込んだ情報を取得し、そのページのheaderに追加する
+    const helmet =  Helmet.renderStatic()
+
     res.set('content-type', 'text/html')
     res.send(`<!DOCTYPE html>
 <html lang='ja'>
 <head>
 <meta charset='utf-8' />
 <meta name='viewport' content='width=device-width, initial-scale=1' />
+${extractor.getLinkTags()}
+${extractor.getStyleTags()}
+${helmet.title.toString()}
+${helmet.meta.toString()}
+${helmet.link.toString()}
+${helmet.script.toString()}
+<style id='jss-server-side'>${MUIStyles}</style>
 </head>
 <body>
   <div id="root">${html}</div>
   <script id="initial-data">window.__STATE__=${JSON.stringify(initialData)}</script>
+  <!-- CSR -->
+  ${extractor.getScriptTags()}
 </body>
 </html>`)
   },
