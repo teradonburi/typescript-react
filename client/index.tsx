@@ -49,7 +49,6 @@ const App: React.FC = ({children}) => {
     }
   }, [])
 
-
   return (
     <HelmetProvider>
       <ThemeProvider theme={theme}>
