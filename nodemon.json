@@ -1,6 +1,6 @@
 {
   "verbose": true,
   "ignore": ["dist", "client"],
-  "exec": "babel-node --inspect --extensions \".ts,.tsx\"",
+  "exec": "BABEL_ENV=node babel-node --inspect --extensions \".ts,.tsx\"",
   "ext": "ts,tsx,json"
 }

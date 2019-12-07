@@ -35,9 +35,6 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // HMR debug用
-    new webpack.DefinePlugin({
-      'process.env.IS_BROWSER': JSON.stringify(true),
-    }),
     new LoadablePlugin(),
   ],
 }
