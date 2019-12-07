@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'production') {
   // サーバ起動時、src変更時にwebpackビルドを行う
   const compiler = webpack(webpackConfig)
 
-  // バックエンド用webpack-dev-server
+  // バックエンド用webpack-dev-middleware
   app.use(
     webpackDevMiddleware(compiler, {
       publicPath: webpackConfig.output.publicPath,
