@@ -67,7 +67,7 @@ class UserPage extends React.Component<Props, State> {
 
   componentDidMount(): void {
     // user取得APIコールのactionをキックする
-    // SSR時のstoreデータがあれば、本来呼ぶ必要がないが、今回はサンプルのためキックする
+    // SSR時のreduxストアデータがあれば、本来呼ぶ必要がないが、今回はサンプルのためキックする
     this.props.load()
   }
 
