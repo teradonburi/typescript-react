@@ -10,15 +10,15 @@ module.exports = (api) => {
         {
           useBuiltIns: web ? 'usage' : undefined,
           corejs: web ? 'core-js@3' : false,
-          targets: !web ? { node: 'current' } : undefined
-        }
+          targets: !web ? { node: 'current' } : undefined,
+        },
       ],
       '@babel/preset-typescript',
-      '@babel/preset-react'
+      '@babel/preset-react',
     ],
     plugins: [
-      '@babel/plugin-syntax-dynamic-import',
+      '@babel/plugin-proposal-optional-chaining',
       '@loadable/babel-plugin',
-    ]
+    ],
   }
 }
