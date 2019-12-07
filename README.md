@@ -5,7 +5,7 @@ TypeScript+React+SSR(NodeJS)構成のサンプル
 - TypeScript(@babel/preset-typescript)
 - React
 - NodeJS(express+nodemon+@babel/node)
-- webpack
+- webpack+HMR(webpack-dev-middleware+webpack-hot-middleware)
 - babel
 - redux
 - react-helmet-async
