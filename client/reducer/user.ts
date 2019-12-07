@@ -35,7 +35,7 @@ export default function reducer(state = initialState, action: LoadAction = {}): 
 
 // actionの定義
 export function load() {
-  // clientはaxiosの付与したクライアントパラメータ（後述）
+  // clientはaxiosの付与したクライアントパラメータ
   // 非同期処理をPromise形式で記述できる
   return (dispatch: Store['dispatch'], _: Store['getState'], client: AxiosInstance): Promise<void> => {
     return client
