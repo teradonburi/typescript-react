@@ -11,7 +11,7 @@ TypeScript+React+SSR(NodeJS)構成のサンプル
 - react-helmet-async
 - dynamic-import(lodable-component)
 - eslint
-- material-ui(MUI)
+- material-ui
 
 動作確認環境：  
 
