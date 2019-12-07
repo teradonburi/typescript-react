@@ -9,8 +9,9 @@ TypeScript+React+SSR(NodeJS)構成のサンプル
 - babel
 - redux
 - react-helmet-async
-- material-ui
+- dynamic-import(lodable-component)
 - eslint
+- material-ui(MUI)
 
 動作確認環境：  
 

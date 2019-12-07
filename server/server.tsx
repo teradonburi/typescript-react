@@ -10,12 +10,14 @@ import { model } from 'interface'
 
 const app = express()
 
+// APIエラーハンドリング
 const wrap = (fn: (req: Request, res: Response, next?: NextFunction) => Promise<Response | undefined>) => (req: Request, res: Response, next?: NextFunction): Promise<Response | undefined> => fn(req, res, next).catch((err: Error) => {
   console.error(err)
   if (!res.headersSent) {
     return res.status(500).json({message: 'Internal Server Error'})
   }
 })
+// NodeJSエラーハンドリング
 process.on('uncaughtException', (err) => console.error(err))
 process.on('unhandledRejection', (err) => console.error(err))
 
