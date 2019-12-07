@@ -48,11 +48,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.static(path.join(__dirname, '../public')))
 
-const nodeStats = path.resolve(
-  __dirname,
-  '../dist/loadable-stats.json',
-)
-
 // 今回はダミーデータ、本来はDBから取得する
 const users: model.User[] = [{gender: 'male', name: {first: 'テスト', last: '太郎'}, email: 'test@gmail.com', picture: {thumbnail: 'https://avatars1.githubusercontent.com/u/771218?s=460&v=4'}}]
 app.get('/api/users', wrap(async (_: Request, res: Response): Promise<Response | undefined> => {
@@ -72,6 +67,12 @@ import theme from '../client/theme'
 import { HelmetProvider } from 'react-helmet-async'
 import { HelmetData } from 'react-helmet'
 
+
+const nodeStats = path.resolve(
+  __dirname,
+  '../dist/loadable-stats.json',
+)
+
 app.get(
   '*',
   async (req: Request, res: Response) => {
@@ -84,7 +85,6 @@ app.get(
     const context = {}
 
     // ChunkExtractorでビルド済みのチャンク情報を取得
-    // loadable-stats.jsonからフロントエンドモジュールを取得する
     const extractor = new ChunkExtractor({ statsFile: nodeStats })
 
     // CSS(MUI)
@@ -106,6 +106,7 @@ app.get(
       )
     )
 
+    // loadable-stats.jsonからフロントエンドモジュールを取得する
     const jsx = extractor.collectChunks(<App />)
 
     // SSR
