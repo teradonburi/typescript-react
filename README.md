@@ -8,7 +8,9 @@ TypeScript+React+SSR(NodeJS)構成のサンプル
 - webpack
 - babel
 - redux
+- react-helmet-async
 - material-ui
+- eslint
 
 動作確認環境：  
 

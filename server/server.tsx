@@ -1,18 +1,31 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import path from 'path'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import express from 'express'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { ChunkExtractor } from '@loadable/server'
-import reducer from "../client/reducer/reducer"
+import reducer from '../client/reducer/reducer'
+import { model } from 'interface'
 
 const app = express()
 
+const wrap = (fn: (req: Request, res: Response, next?: NextFunction) => Promise<Response>) => (req: Request, res: Response, next?: NextFunction): Promise<Response | undefined> => fn(req, res, next).catch((err: Error) => {
+  console.error(err)
+  if (!res.headersSent) {
+    return res.status(500).json({message: 'Internal Server Error'})
+  }
+})
+process.on('uncaughtException', (err) => console.error(err))
+process.on('unhandledRejection', (err) => console.error(err))
+
 if (process.env.NODE_ENV !== 'production') {
+  /* eslint-disable @typescript-eslint/no-var-requires */
   const webpackConfig = require('../webpack.config')
   const webpackDevMiddleware = require('webpack-dev-middleware')
   const webpackHotMiddleware = require('webpack-hot-middleware')
   const webpack = require('webpack')
+  /* eslint-enable @typescript-eslint/no-var-requires */
 
   // サーバ起動時、src変更時にwebpackビルドを行う
   const compiler = webpack(webpackConfig)
@@ -38,12 +51,18 @@ const nodeStats = path.resolve(
   '../dist/loadable-stats.json',
 )
 
+// 今回はダミーデータ、本来はDBから取得する
+const users: model.User[] = [{gender: 'male', name: {first: 'テスト', last: '太郎'}, email: 'test@gmail.com', picture: {thumbnail: 'https://avatars1.githubusercontent.com/u/771218?s=460&v=4'}}]
+app.get('/api/users', wrap(async (_: Request, res: Response): Promise<Response> => {
+  return res.json(users)
+}))
+
 // Redux
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 // StaticRouter
 import { StaticRouter } from 'react-router-dom'
-import { Router } from "../client/Router"
+import { Router } from '../client/Router'
 // Material-UI SSR
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
 import theme from '../client/theme'
@@ -53,11 +72,10 @@ import { HelmetData } from 'react-helmet'
 
 app.get(
   '*',
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
 
     // 疑似ユーザ作成（本来はDBからデータを取得して埋め込む)
-    const users = [{'gender': 'male', 'name': {'first': 'テスト', 'last': '太郎'}, 'email': '', 'picture': {'thumbnail': 'https://avatars1.githubusercontent.com/u/771218?s=460&v=4'}}]
-    const initialData = { user: {users} }
+    const initialData = req.url === '/' ? { user: {users} } : {}
     // Redux Storeの作成(initialDataには各Componentが参照するRedux Storeのstateを代入する)
     const store = createStore(reducer, initialData)
 

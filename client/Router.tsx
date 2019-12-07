@@ -7,8 +7,8 @@ const NotFound = loadable(() => import(/* webpackPrefetch: true, webpackChunkNam
 
 export const Router: React.SFC = () => (
   <Switch>
-    <Route exact path='/' render={(props) => <UserPage bgcolor='#eeeeee' {...props} />} />
+    <Route exact path='/' render={(props): JSX.Element => <UserPage bgcolor='#eeeeee' {...props} />} />
     {/* それ以外のパス */}
-    <Route component={NotFound} />　
+    <Route component={NotFound} />
   </Switch>
 )

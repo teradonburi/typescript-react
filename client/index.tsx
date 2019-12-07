@@ -14,13 +14,13 @@ import theme from './theme'
 
 declare global {
   interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: <R>(a: R) => R,
-    __STATE__: {}
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: <R>(a: R) => R;
+    __STATE__: {};
   }
-  interface NodeModule { 
-     hot: { 
-      accept(dependency: string, callback:() => void): void; 
-     }
+  interface NodeModule {
+    hot: {
+      accept(dependency: string, callback: () => void): void;
+    };
   }
 }
 
@@ -35,12 +35,15 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 // axiosをthunkの追加引数に加える
 const thunkWithClient = thunk.withExtraArgument(client)
 // redux-thunkをミドルウェアに適用
-const store = createStore(reducer, initialData, composeEnhancers(applyMiddleware(thunkWithClient)))
+const store = createStore(
+  reducer,
+  initialData,
+  composeEnhancers(applyMiddleware(thunkWithClient))
+)
 
 const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate
 
-const App: React.FC = ({children}) => {
-
+const App: React.FC = ({ children }) => {
   React.useEffect(() => {
     const jssStyles = document.getElementById('jss-server-side')
     if (jssStyles && jssStyles.parentNode) {
@@ -53,17 +56,15 @@ const App: React.FC = ({children}) => {
     <HelmetProvider>
       <ThemeProvider theme={theme}>
         <Provider store={store}>
-          <BrowserRouter>
-            {children}
-          </BrowserRouter>
+          <BrowserRouter>{children}</BrowserRouter>
         </Provider>
       </ThemeProvider>
     </HelmetProvider>
   )
 }
 
-const render = async () => {
-  const {Router} = await import(/* webpackMode: "eager" */ './Router')
+const render = async (): Promise<void> => {
+  const { Router } = await import(/* webpackMode: "eager" */ './Router')
 
   renderMethod(
     <App>

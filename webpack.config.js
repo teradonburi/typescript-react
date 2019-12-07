@@ -26,17 +26,18 @@ module.exports = {
       { 
         test: /\.ts(x?)$/, // .ts .tsxがbabelのビルド対象
         exclude: /node_modules/, // 関係のないnode_modulesはビルドに含めない
-        use: {
-          loader: 'babel-loader', // babel
-        }
+        use: [
+          {loader: 'babel-loader'}, // babel
+          {loader: 'eslint-loader'}, // eslint
+        ]
       }
     ]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // HMR debug用
     new webpack.DefinePlugin({
-      'process.env.IS_BROWSER': JSON.stringify(true)
+      'process.env.IS_BROWSER': JSON.stringify(true),
     }),
-    new LoadablePlugin()
-  ]
+    new LoadablePlugin(),
+  ],
 }
