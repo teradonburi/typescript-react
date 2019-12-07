@@ -26,3 +26,9 @@ $ yarn global add nodemon
 # @babel/nodeのインストール
 $ yarn global add @babel/node
 ```
+
+起動方法：  
+
+```
+$ yarn dev
+```
