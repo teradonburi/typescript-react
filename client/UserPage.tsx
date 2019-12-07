@@ -102,10 +102,10 @@ class UserPage extends React.Component<Props, State> {
                 <CardContent className={classes.card}>
                   <Avatar src={user.picture.thumbnail} />
                   <p className={classes.name}>
-                    {'名前:' + user.name.first + ' ' + user.name.last}
+                    {'名前:' + user?.name?.first + ' ' + user?.name?.last}
                   </p>
                   <p className={classes.gender}>
-                    {'性別:' + (user.gender == 'male' ? '男性' : '女性')}
+                    {'性別:' + (user?.gender == 'male' ? '男性' : '女性')}
                   </p>
                   <div style={{ textAlign: 'right' }}>
                     <Button
@@ -128,7 +128,7 @@ class UserPage extends React.Component<Props, State> {
             onClose={(): void => this.handleRequestClose()}
           >
             <DialogTitle>メールアドレス</DialogTitle>
-            <DialogContent>{this.state.user.email}</DialogContent>
+            <DialogContent>{this.state.user?.email}</DialogContent>
           </Dialog>
         )}
       </div>

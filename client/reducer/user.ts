@@ -25,7 +25,7 @@ export default function reducer(state = initialState, action: LoadAction = {}): 
   switch (action.type) {
     case LOAD:
       return {
-        users: action.users || state.users,
+        users: action.users ?? state.users,
       }
     default:
       // 初期化時はここに来る（initialStateのオブジェクトが返却される）
