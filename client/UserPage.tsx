@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect, ConnectedProps } from 'react-redux'
-import { load } from './reducer/user'
+import { load } from './action/user'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { model } from 'interface'
