@@ -7,7 +7,7 @@ TypeScript+React+SSR(NodeJS)構成のサンプル
 - NodeJS(express+nodemon+@babel/node)
 - webpack+HMR(webpack-dev-middleware+webpack-hot-middleware)
 - babel
-- redux
+- redux+react-redux+redux-thunk+typescript-fsa
 - react-helmet-async
 - dynamic-import(lodable-component)
 - eslint

@@ -5,6 +5,7 @@ import { model } from 'interface'
 
 const actionCreator = actionCreatorFactory()
 
+// typescript-fsaで<params,result,error>の型を定義
 export const loadAction = actionCreator.async<{}, {users: model.User[]}, {error: Error}>('user/LOAD')
 
 // actionの定義

@@ -74,10 +74,12 @@ const render = async (): Promise<void> => {
   )
 }
 
+// loadable-componentの準備待ち
 loadableReady(() => {
   render()
 })
 
+// webpack-hot-middlewareのHMR時に再レンダリング
 if (module.hot) {
   module.hot.accept('./Router', () => {
     render()
