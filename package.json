@@ -41,6 +41,8 @@
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.3",
     "typescript": "^3.7.2",
+    "typescript-fsa": "^3.0.0",
+    "typescript-fsa-reducers": "^1.2.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.7.2",
